@@ -6,11 +6,139 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>OBJECTIVE</h1>
+    <h1>MYFLIX APP</h1>
+    <h1>Objective</h1>
     <p>To build the server-side component of a “movies” web application. The web
         application will provide users with access to information about different
         movies, directors, and genres. Users will be able to sign up, update their
         personal information, and create a list of their favorite movies.
         </p>
+    <h2>ENDPOINTS AND URLs</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>REQUEST</th>
+                <th>URL</th>
+                <th>HTTP METHOD</th>
+                <th>REQUEST BODY DATA FORMAT</th>
+                <th>RESPONSE BODY DATA FORMAT</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Return a list of ALL movies to the user</td>
+                <td>/movies</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about all movies</td>
+            </tr>
+            <tr>
+                <td>Return data about a single movie by title to the user</td>
+                <td>/movies/[title]</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a single movie, id, title, genre, director. Example:
+                    <code>
+                        {
+                            id: 10,
+                            title: 'Twilight',
+                            director: 'Catherine Hardwicke',
+                            genre: 'Suspence Romance'
+                          }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Return data about a genre by ID</td>
+                <td>/movies/id/[idNumber]</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a single movie, id, title, genre, director. Example:
+                    <code>
+                        {
+                            id: 10,
+                            title: 'Twilight',
+                            director: 'Catherine Hardwicke',
+                            genre: 'Suspence Romance'
+                          }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Return data about a genre by name</td>
+                <td>/movies/genre/[genreName]</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a single movie, title, genre, director. Example:
+                    <code>
+                        {
+                            id: 10,
+                            title: 'Twilight',
+                            director: 'Catherine Hardwicke',
+                            genre: 'Suspence Romance'
+                          }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Return data about a genre by director name</td>
+                <td>/movies/directors/[directorName]</td>
+                <td>GET</td>
+                <td>None</td>
+                <td>A JSON object holding data about a single movie, title, genre, director. Example:
+                    <code>
+                        {
+                            id: 10,
+                            title: 'Twilight',
+                            director: 'Catherine Hardwicke',
+                            genre: 'Suspence Romance'
+                          }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Add a movie</td>
+                <td>/movies</td>
+                <td>POST</td>
+                <td>A JSON object holding data about the movie to add, structured like:<br />
+                    <code>
+                        { 
+                        title: 'Twilight',<br>
+                        director: 'Catherine Hardwicke',<br>
+                        genre: 'Suspence Romance' 
+                        }
+                    </code>
+                </td>
+                <td>A JSON object holding data about the movie that was added, including an ID:<br />
+                    <code>
+                        { 
+                        id : ###, <br>
+                        title: 'Twilight',<br>
+                        director: 'Catherine Hardwicke',<br>
+                        genre: 'Suspence Romance' 
+                        }
+                    </code>
+                </td>
+            </tr>
+            <tr>
+                <td>Update a movie from the movies list</td>
+                <td>/movies/[idNumber]</td>
+                <td>PUT</td>
+                <td>None</td>
+                <td>
+                  A text message indicating whether the movie was  updated.
+                </td>
+              </tr>
+            <tr>
+                <td>Remove a movie from the movies list</td>
+                <td>/movies/[idNumber]</td>
+                <td>DELETE</td>
+                <td>None</td>
+                <td>
+                  A text message indicating whether the movie was successfully removed.
+                </td>
+              </tr>
+        </tbody>
+    </table>
 </body>
 </html>

@@ -78,15 +78,11 @@ let topMovies = [
 
 ];
 
-// GET requests
-app.get('/', (req, res) => {
-  res.send('Welcome to my top 10 movies site!');
-});
-
+// GET all movies
 app.get('/movies', (req, res) => {
   res.status(200).json(topMovies);
 });
-// Get Titles
+// GET Titles
 app.get('/movies/:title', (req, res) => {
   const {title}= req.params;
   const movie = topMovies.find(movie => movie.title === title)
@@ -96,7 +92,7 @@ app.get('/movies/:title', (req, res) => {
     res.status(400).send('No such movie found')
    }
 });
-// Get ID
+// GET ID
 app.get('/movies/id/:idNumber', (req, res) => {
   const {idNumber}= req.params;
   const id = topMovies.find(movie => movie.id == idNumber)
@@ -106,7 +102,7 @@ app.get('/movies/id/:idNumber', (req, res) => {
     res.status(400).send('No such id found')
    }
 });
-// Get Genres
+// GET Genres
 app.get('/movies/genre/:genreName', (req, res) => {
   const {genreName}= req.params;
   const genre = topMovies.find(movie => movie.genre === genreName);
@@ -116,7 +112,7 @@ app.get('/movies/genre/:genreName', (req, res) => {
     res.status(400).send('No such genre found')
    }
 });
-// Get Directors
+// GET Directors
 app.get('/movies/directors/:directorName', (req, res) => {
   const {directorName}= req.params;
   const director = topMovies.find(movie => movie.director === directorName);
@@ -126,7 +122,7 @@ app.get('/movies/directors/:directorName', (req, res) => {
     res.status(400).send('No such director found')
    }
 });
-// Create
+// CREATE
 app.post('/movies',(req, res) => {
  const newMovie = req.body;
 
@@ -138,7 +134,7 @@ app.post('/movies',(req, res) => {
     res.status(400).send('Movie needs name')
   }
 })
-// Update
+// UPDATE
 app.put('/movies/:idNumber',(req, res) => {
   const {idNumber} = req.params;
  const updatedMovie = req.body;
@@ -152,7 +148,7 @@ app.put('/movies/:idNumber',(req, res) => {
     res.status(400).send('No such movie')
   }
 })
-// Delete
+// DELETE
 app.delete('/movies/:idNumber',(req, res) => {
   const {idNumber} = req.params;
  let movie = topMovies.find(movie => movie.id == idNumber);
