@@ -75,7 +75,6 @@ let topMovies = [
   director: 'Catherine Hardwicke',
   genre: 'Suspence Romance'
 }
-
 ];
 
 // GET all movies
@@ -135,7 +134,7 @@ app.post('/movies',(req, res) => {
   }
 })
 // UPDATE
-app.put('/movies/:idNumber',(req, res) => {
+app.put('/movies/id/:idNumber',(req, res) => {
   const {idNumber} = req.params;
  const updatedMovie = req.body;
 
@@ -149,7 +148,7 @@ app.put('/movies/:idNumber',(req, res) => {
   }
 })
 // DELETE
-app.delete('/movies/:idNumber',(req, res) => {
+app.delete('/movies/id/:idNumber',(req, res) => {
   const {idNumber} = req.params;
  let movie = topMovies.find(movie => movie.id == idNumber);
 
