@@ -5,6 +5,8 @@ const express = require("express"),
   app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const cors = require('cors');
+app.use(cors());
 let auth = require("./auth")(app);
 const passport = require("passport");
 require("./passport");
@@ -16,6 +18,8 @@ const Movies = Models.Movie;
 const Users = Models.User;
 const Directors = Models.Director;
 const Genres = Models.Genre;
+const { check, validationResult } = require('express-validator');
+
 
 mongoose.connect("mongodb://localhost:27017/myMoviesDb", {
   useNewUrlParser: true,
@@ -176,6 +180,36 @@ app.get("/movies/genre/:genreName", passport.authenticate('jwt', { session: fals
       console.error(err);
       res.status(500).send("Error: " + err);
     });
+});
+
+// CREATE a new movie
+app.post("/movies", passport.authenticate('jwt', { session: false }), async (req, res) => {
+  const { title, description, genre, director, featured } = req.body;
+
+  try {
+    // Find the director's ID based on the director's name
+    const directorObject = await Directors.findOne({ name: director });
+    
+    if (!directorObject) {
+      return res.status(400).json({ message: 'Director not found' });
+    }
+
+    const newMovie = await Movies.create({
+      Title: title,
+      Description: description,
+      Genre: { name: genre },
+      Director: {
+        Name: directorObject.Name,
+        _id: directorObject._id  
+      },
+      Featured: featured
+    });
+
+    res.status(201).json(newMovie);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error: " + error);
+  }
 });
 // GET genres
 app.get("/genre/:genreName", passport.authenticate('jwt', { session: false }), async (req, res) => {
