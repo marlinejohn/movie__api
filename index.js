@@ -48,7 +48,7 @@ app.post("/users", async (req, res) => {
       } else {
         Users.create({
           username: req.body.username,
-          password: req.body.password,
+          Password: hashedPassword,
           email: req.body.email,
           birthDate: req.body.birthDate,
           favoriteMovie: req.body.favoriteMovie,
