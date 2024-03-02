@@ -40,6 +40,7 @@ app.get("/users", passport.authenticate('jwt', { session: false }), async (req, 
 
 // CREATE user
 app.post("/users", async (req, res) => {
+  let hashedPassword = Users.hashPassword(req.body.Password);
   await Users.findOne({ username: req.body.username })
     .then((user) => {
       if (user) {
