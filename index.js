@@ -39,7 +39,19 @@ app.get("/users", passport.authenticate('jwt', { session: false }), async (req, 
 });
 
 // CREATE user
-app.post("/users", async (req, res) => {
+app.post("/users",  [
+  //input validation here
+  check('Username', 'Username is required').notEmpty(),
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Password', 'Password is required').notEmpty(),
+  check('Email', 'Email does not appear to be valid').isEmail()
+],
+async (req, res) => {
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
+
   let hashedPassword = Users.hashPassword(req.body.Password);
   await Users.findOne({ username: req.body.username })
     .then((user) => {
@@ -69,7 +81,18 @@ app.post("/users", async (req, res) => {
 });
 
 // UPDATE/PUT user info
-app.put("/users/:username", passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.put("/users/:username", [
+  //input validation here
+  check('Username', 'Username is required').notEmpty(),
+  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('Password', 'Password is required').notEmpty(),
+  check('Email', 'Email does not appear to be valid').isEmail()
+], passport.authenticate('jwt', { session: false }), async (req, res) => {
+  
+  let errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({errors: errors.array()});
+  }
   await Users.findOneAndUpdate(
     { username: req.params.username },
     {
