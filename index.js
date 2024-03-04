@@ -45,10 +45,10 @@ app.get("/users", passport.authenticate('jwt', { session: false }), async (req, 
 // CREATE user
 app.post("/users",  [
   //input validation here
-  check('Username', 'Username is required').notEmpty(),
-  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-  check('Password', 'Password is required').notEmpty(),
-  check('Email', 'Email does not appear to be valid').isEmail()
+  check('username', 'Username is required').notEmpty(),
+  check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').notEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
 ],
 async (req, res) => {
   let errors = validationResult(req);
@@ -56,7 +56,7 @@ async (req, res) => {
     return res.status(422).json({errors: errors.array()});
   }
 
-  let hashedPassword = Users.hashPassword(req.body.Password);
+  let hashedPassword = Users.hashPassword(req.body.password);
   await Users.findOne({ username: req.body.username })
     .then((user) => {
       if (user) {
@@ -64,7 +64,7 @@ async (req, res) => {
       } else {
         Users.create({
           username: req.body.username,
-          Password: hashedPassword,
+          password: hashedPassword,
           email: req.body.email,
           birthDate: req.body.birthDate,
           favoriteMovie: req.body.favoriteMovie,
@@ -87,10 +87,10 @@ async (req, res) => {
 // UPDATE/PUT user info
 app.put("/users/:username", [
   //input validation here
-  check('Username', 'Username is required').notEmpty(),
-  check('Username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
-  check('Password', 'Password is required').notEmpty(),
-  check('Email', 'Email does not appear to be valid').isEmail()
+  check('username', 'Username is required').notEmpty(),
+  check('username', 'Username contains non alphanumeric characters - not allowed.').isAlphanumeric(),
+  check('password', 'Password is required').notEmpty(),
+  check('email', 'Email does not appear to be valid').isEmail()
 ], passport.authenticate('jwt', { session: false }), async (req, res) => {
 
   let errors = validationResult(req);
