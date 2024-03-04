@@ -30,6 +30,10 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true,
 });
 
+app.get("/", (req, res) => {
+  res.send("Welcome to MJ's moviesFlix");
+});
+
 // GET users list
 app.get("/users", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.find()
