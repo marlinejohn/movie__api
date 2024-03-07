@@ -13,7 +13,8 @@ let movieSchema= mongoose.Schema({
         Name: String,
         _id: { type: mongoose.Schema.Types.ObjectId, ref: 'directors', required: true}
             },
-    Featured: Boolean
+    Featured: Boolean,
+    ImageUrl: {type: String , required: true}
 });
 
 let userSchema = mongoose.Schema({

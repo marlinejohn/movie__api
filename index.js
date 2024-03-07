@@ -216,7 +216,7 @@ app.get("/movies/genre/:genreName", async (req, res) => {
 
 // CREATE a new movie
 app.post("/movies", passport.authenticate('jwt', { session: false }), async (req, res) => {
-  const { title, description, genre, director, featured } = req.body;
+  const { title, description, genre, director, featured, imageUrl } = req.body;
 
   try {
     // Find the director's ID based on the director's name
@@ -234,7 +234,8 @@ app.post("/movies", passport.authenticate('jwt', { session: false }), async (req
         Name: directorObject.Name,
         _id: directorObject._id  
       },
-      Featured: featured
+      Featured: featured,
+      ImageUrl: imageUrl
     });
 
     res.status(201).json(newMovie);
