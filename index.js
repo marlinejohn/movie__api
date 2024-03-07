@@ -38,7 +38,7 @@ app.get("/", (req, res) => {
 app.get("/users", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.find()
     .then((users) => {
-      res.status(201).json(users);
+      res.status(200).json(users);
     })
     .catch((err) => {
       console.error(err);
@@ -169,10 +169,10 @@ app.delete("/users/:username/movies/:name", passport.authenticate('jwt', { sessi
 
 
 // GET all movies
-app.get("/movies",  async (req, res) => {
+app.get("/movies", passport.authenticate('jwt', { session: false }),  async (req, res) => {
   await Movies.find()
     .then((movies) => {
-      res.status(201).json(movies);
+      res.status(200).json(movies);
     })
     .catch((err) => {
       console.error(err);
@@ -183,7 +183,7 @@ app.get("/movies",  async (req, res) => {
 app.get("/movies/:title", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Movies.findOne({ title: req.params.title })
     .then((movies) => {
-      res.status(201).json(movies);
+      res.status(200).json(movies);
     })
     .catch((err) => {
       console.error(err);
@@ -194,7 +194,7 @@ app.get("/movies/:title", passport.authenticate('jwt', { session: false }), asyn
 app.get("/movies/id/:idNumber", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Movies.findOne({ _id: req.params.idNumber })
     .then((movies) => {
-      res.status(201).json(movies);
+      res.status(200).json(movies);
     })
     .catch((err) => {
       console.error(err);
@@ -203,10 +203,10 @@ app.get("/movies/id/:idNumber", passport.authenticate('jwt', { session: false })
 });
 
 // GET genres from movies
-app.get("/movies/genre/:genreName", passport.authenticate('jwt', { session: false }), async (req, res) => {
+app.get("/movies/genre/:genreName", async (req, res) => {
   await Movies.find({ genre: req.params.genreName })
     .then((movies) => {
-      res.status(201).json(movies);
+      res.status(200).json(movies);
     })
     .catch((err) => {
       console.error(err);
@@ -247,7 +247,7 @@ app.post("/movies", passport.authenticate('jwt', { session: false }), async (req
 app.get("/genre/:genreName", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Genres.findOne({ name: req.params.genreName })
     .then((genre) => {
-      res.status(201).json(genre);
+      res.status(200).json(genre);
     })
     .catch((err) => {
       console.log(err);
@@ -259,7 +259,7 @@ app.get("/genre/:genreName", passport.authenticate('jwt', { session: false }), a
 app.get("/directors/:directorName", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Directors.findOne({ name: req.params.directorName })
     .then((directors) => {
-      res.status(201).json(directors);
+      res.status(200).json(directors);
     })
     .catch((err) => {
       console.log(err);
