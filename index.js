@@ -12,8 +12,6 @@ const passport = require("passport");
 require("./passport");
 app.use(express.static("public"));
 app.use(morgan("common"));
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger-config');
 const mongoose = require("mongoose");
 const Models = require("./models.js");
 const Movies = Models.Movie;
@@ -32,35 +30,9 @@ mongoose.connect(process.env.CONNECTION_URI, {
   useUnifiedTopology: true,
 });
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-
-
-/**
- * @openapi
- * /:
- *   get:
- *     summary: Welcome message
- *     description: Get a welcome message.
- *     responses:
- *       200:
- *         description: Successful response with a welcome message.
- */
 app.get("/", (req, res) => {
   res.send("Welcome to MJ's moviesFlix");
 });
-
-/**
- * @openapi
- * /users:
- *   get:
- *     summary: Get all users
- *     description: Retrieve a list of all users.
- *     security:
- *       - jwt: []
- *     responses:
- *       200:
- *         description: Successful response with a list of users.
- */
 
 // GET users list
 app.get("/users", passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -73,36 +45,6 @@ app.get("/users", passport.authenticate('jwt', { session: false }), async (req, 
       res.status(500).send("Error: " + err);
     });
 });
-
-/**
- * @openapi
- * /users:
- *   post:
- *     summary: Create a new user
- *     description: Create a new user with the provided details.
- *     security:
- *       - jwt: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               email:
- *                 type: string
- *               birthDate:
- *                 type: string
- *     responses:
- *       201:
- *         description: Successful response with the created user.
- *       400:
- *         description: Bad request. User with the same username already exists.
- */
 
 // CREATE user
 app.post("/users",  [
@@ -146,42 +88,6 @@ async (req, res) => {
     });
 });
 
-/**
- * @openapi
- * /users/{username}:
- *   put:
- *     summary: Update user information
- *     description: Update user information based on the provided username.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: username
- *         required: true
- *         schema:
- *           type: string
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               username:
- *                 type: string
- *               password:
- *                 type: string
- *               email:
- *                 type: string
- *               birthDate:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful response with the updated user.
- *       400:
- *         description: Bad request. Invalid input or user not found.
- */
-
 // UPDATE/PUT user info
 app.put("/users/:username", [
   //input validation here
@@ -216,31 +122,6 @@ app.put("/users/:username", [
       res.status(500).send("Error:" + err);
     });
 });
-/**
- * @openapi
- * /users/{username}/movies/{movieName}:
- *   post:
- *     summary: Add a movie to a user's favorite list
- *     description: Add a movie to the favorite list of a user based on the provided username and movie name.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: username
- *         required: true
- *         schema:
- *           type: string
- *       - in: path
- *         name: movieName
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successful response with the updated user's favorite list.
- *       500:
- *         description: Internal server error.
- */
 
 // CREATE user's Fav movie
 app.post("/users/:username/movies/:movieName", passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -257,28 +138,6 @@ app.post("/users/:username/movies/:movieName", passport.authenticate('jwt', { se
       res.status(500).send("Error: " + err);
     });
 });
-/**
- * @openapi
- * /users/{username}:
- *   delete:
- *     summary: Delete a user by username
- *     description: Delete a user based on the provided username.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: username
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: User successfully deleted.
- *       400:
- *         description: User not found.
- *       500:
- *         description: Internal server error.
- */
 
 // DELETE user by username
 app.delete("/users/:username", passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -296,32 +155,6 @@ app.delete("/users/:username", passport.authenticate('jwt', { session: false }),
     });
 });
 
-/**
- * @openapi
- * /users/{username}/movies/{name}:
- *   delete:
- *     summary: Remove a movie from user's favorite list
- *     description: Remove a movie from the favorite list of a user.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: username
- *         required: true
- *         schema:
- *           type: string
- *       - in: path
- *         name: name
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Movie successfully removed from the user's favorite list.
- *       500:
- *         description: Internal server error.
- */
-
 // DELETE Fav movie by moviename
 app.delete("/users/:username/movies/:name", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Users.findOneAndUpdate({username: req.params.username},{ $pull: {favoriteMovies: req.params.name} }, {new:true})
@@ -334,20 +167,6 @@ app.delete("/users/:username/movies/:name", passport.authenticate('jwt', { sessi
     });
 });
 
-/**
- * @openapi
- * /movies:
- *   get:
- *     summary: Get all movies
- *     description: Retrieve a list of all movies.
- *     security:
- *       - jwt: []
- *     responses:
- *       200:
- *         description: Successful response with a list of movies.
- *       500:
- *         description: Internal server error.
- */
 
 // GET all movies
 app.get("/movies", passport.authenticate('jwt', { session: false }),  async (req, res) => {
@@ -360,28 +179,6 @@ app.get("/movies", passport.authenticate('jwt', { session: false }),  async (req
       res.status(500).send("Error: " + err);
     });
 });
-
-/**
- * @openapi
- * /movies/{title}:
- *   get:
- *     summary: Get a movie by title
- *     description: Retrieve a movie based on the provided title.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: title
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successful response with the movie details.
- *       500:
- *         description: Internal server error.
- */
-
 // GET movies by title name
 app.get("/movies/:title", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Movies.findOne({ title: req.params.title })
@@ -393,28 +190,7 @@ app.get("/movies/:title", passport.authenticate('jwt', { session: false }), asyn
       res.status(500).send("Error:" + err);
     });
 });
-/**
- * @openapi
- * /movies/id/{idNumber}:
- *   get:
- *     summary: Get a movie by ID
- *     description: Retrieve a movie based on the provided ID.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: idNumber
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successful response with the movie details.
- *       500:
- *         description: Internal server error.
- */
-
-// GET movie by ID
+// // GET movie by ID
 app.get("/movies/id/:idNumber", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Movies.findOne({ _id: req.params.idNumber })
     .then((movies) => {
@@ -425,24 +201,6 @@ app.get("/movies/id/:idNumber", passport.authenticate('jwt', { session: false })
       res.status(500).send("Error: " + err);
     });
 });
-/**
- * @openapi
- * /movies/genre/{genreName}:
- *   get:
- *     summary: Get movies by genre
- *     description: Retrieve a list of movies based on the provided genre.
- *     parameters:
- *       - in: path
- *         name: genreName
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successful response with a list of movies.
- *       500:
- *         description: Internal server error.
- */
 
 // GET genres from movies
 app.get("/movies/genre/:genreName", async (req, res) => {
@@ -455,48 +213,6 @@ app.get("/movies/genre/:genreName", async (req, res) => {
       res.status(500).send("Error: " + err);
     });
 });
-
-/**
- * @openapi
- * /movies:
- *   post:
- *     summary: Create a new movie
- *     description: Create a new movie with the provided details.
- *     security:
- *       - jwt: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               description:
- *                 type: string
- *               genre:
- *                 type: string
- *               director:
- *                 type: string
- *               featured:
- *                 type: boolean
- *               imageUrl:
- *                 type: string
- *             required:
- *               - title
- *               - description
- *               - genre
- *               - director
- *               - imageUrl
- *     responses:
- *       201:
- *         description: Movie successfully created.
- *       400:
- *         description: Invalid request or missing required fields.
- *       500:
- *         description: Internal server error.
- */
 
 // CREATE a new movie
 app.post("/movies", passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -528,27 +244,6 @@ app.post("/movies", passport.authenticate('jwt', { session: false }), async (req
     res.status(500).send("Error: " + error);
   }
 });
-/**
- * @openapi
- * /genre/{genreName}:
- *   get:
- *     summary: Get details of a genre
- *     description: Retrieve details of a genre based on the provided genre name.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: genreName
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successful response with genre details.
- *       500:
- *         description: Internal server error.
- */
-
 // GET genres
 app.get("/genre/:genreName", passport.authenticate('jwt', { session: false }), async (req, res) => {
   await Genres.findOne({ name: req.params.genreName })
@@ -560,27 +255,6 @@ app.get("/genre/:genreName", passport.authenticate('jwt', { session: false }), a
       res.send(500).send("Error: " + err);
     });
 });
-
-/**
- * @openapi
- * /directors/{directorName}:
- *   get:
- *     summary: Get details of a director
- *     description: Retrieve details of a director based on the provided director name.
- *     security:
- *       - jwt: []
- *     parameters:
- *       - in: path
- *         name: directorName
- *         required: true
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Successful response with director details.
- *       500:
- *         description: Internal server error.
- */
 
 // GET Directors
 app.get("/directors/:directorName", passport.authenticate('jwt', { session: false }), async (req, res) => {
@@ -599,8 +273,6 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
 });
-
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // listen for requests
 const port = process.env.PORT || 8080;
